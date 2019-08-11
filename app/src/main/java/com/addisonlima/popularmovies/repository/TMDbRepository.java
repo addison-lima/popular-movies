@@ -1,4 +1,4 @@
-package com.addisonlima.popularmovies.networking;
+package com.addisonlima.popularmovies.repository;
 
 import android.arch.lifecycle.MutableLiveData;
 

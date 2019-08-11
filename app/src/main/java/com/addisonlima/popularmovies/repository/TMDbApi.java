@@ -1,4 +1,4 @@
-package com.addisonlima.popularmovies.networking;
+package com.addisonlima.popularmovies.repository;
 
 import com.addisonlima.popularmovies.model.MoviesResponse;
 
