@@ -9,17 +9,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.addisonlima.popularmovies.model.Movie;
 import com.addisonlima.popularmovies.model.MoviesResponse;
 import com.addisonlima.popularmovies.model.RequestStatus;
+import com.addisonlima.popularmovies.model.RequestStatus.RequestState;
 import com.addisonlima.popularmovies.view.MoviesAdapter;
 import com.addisonlima.popularmovies.viewmodel.MoviesViewModel;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler {
 
-    private RecyclerView mRvMovies;
     private MoviesAdapter mMoviesAdapter;
 
     private MoviesViewModel mMoviesViewModel;
@@ -34,9 +37,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         mMoviesAdapter = new MoviesAdapter(this, this);
 
-        mRvMovies = findViewById(R.id.rvMovies);
-        mRvMovies.setLayoutManager(new GridLayoutManager(this, spanCount));
-        mRvMovies.setAdapter(mMoviesAdapter);
+        RecyclerView rvMovies = findViewById(R.id.rv_movies);
+        rvMovies.setLayoutManager(new GridLayoutManager(this, spanCount));
+        rvMovies.setAdapter(mMoviesAdapter);
 
         mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
         mMoviesViewModel.getRequestStatus().observe(this, getRequestStatusObserver());
@@ -48,8 +51,22 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             @Override
             public void onChanged(@Nullable RequestStatus requestStatus) {
                 if (requestStatus != null) {
-                    Log.d("ADD_TEST", "SortType: " + requestStatus.getSortType());
-                    Log.d("ADD_TEST", "RequestState: " + requestStatus.getRequestState());
+                    RequestState requestState = requestStatus.getRequestState();
+
+                    RecyclerView rvMovies = findViewById(R.id.rv_movies);
+                    rvMovies.setVisibility(
+                            (requestState.equals(RequestState.SUCCESS))
+                                    ? View.VISIBLE : View.INVISIBLE);
+
+                    TextView tvFailureMessage = findViewById(R.id.tv_failure_message);
+                    tvFailureMessage.setVisibility(
+                            (requestState.equals(RequestState.FAILURE))
+                                    ? View.VISIBLE : View.INVISIBLE);
+
+                    ProgressBar pbLoadingIndicator = findViewById(R.id.pb_loading_indicator);
+                    pbLoadingIndicator.setVisibility(
+                            (requestState.equals(RequestState.LOADING))
+                                    ? View.VISIBLE : View.INVISIBLE);
                 }
             }
         };
