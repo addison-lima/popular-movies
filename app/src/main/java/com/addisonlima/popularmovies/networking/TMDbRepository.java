@@ -4,6 +4,9 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.addisonlima.popularmovies.BuildConfig;
 import com.addisonlima.popularmovies.model.MoviesResponse;
+import com.addisonlima.popularmovies.model.RequestStatus;
+import com.addisonlima.popularmovies.model.RequestStatus.RequestState;
+import com.addisonlima.popularmovies.model.RequestStatus.SortType;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -21,12 +24,6 @@ public class TMDbRepository {
     private final MutableLiveData<RequestStatus> mRequestStatus = new MutableLiveData<>();
     private final TMDbApi mService;
 
-    public enum RequestStatus {
-        LOADING,
-        SUCCESS,
-        FAILURE
-    }
-
     public TMDbRepository() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(TMDB_END_POINT)
@@ -38,7 +35,10 @@ public class TMDbRepository {
                 })
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
+
         mService = restAdapter.create(TMDbApi.class);
+
+        sortMoviesBy(SortType.POPULAR);
     }
 
     public MutableLiveData<MoviesResponse> getMoviesResponse() {
@@ -49,26 +49,31 @@ public class TMDbRepository {
         return mRequestStatus;
     }
 
-    public void sortByPopular() {
-        mService.getPopularMovies(getMoviesResponseCallback());
+    public void sortMoviesBy(SortType sortType) {
+        switch (sortType) {
+            case POPULAR:
+                mService.getPopularMovies(getMoviesResponseCallback(SortType.POPULAR));
+                break;
+            case TOP_RATED:
+                mService.getTopRatedMovies(getMoviesResponseCallback(SortType.TOP_RATED));
+                break;
+            default:
+                break;
+        }
     }
 
-    public void sortByTopRated() {
-        mService.getTopRatedMovies(getMoviesResponseCallback());
-    }
-
-    private Callback<MoviesResponse> getMoviesResponseCallback() {
-        mRequestStatus.setValue(RequestStatus.LOADING);
+    private Callback<MoviesResponse> getMoviesResponseCallback(final SortType sortType) {
+        mRequestStatus.setValue(new RequestStatus(sortType, RequestState.LOADING));
         return new Callback<MoviesResponse>() {
             @Override
             public void success(MoviesResponse moviesResponse, Response response) {
                 mMoviesResponse.setValue(moviesResponse);
-                mRequestStatus.setValue(RequestStatus.SUCCESS);
+                mRequestStatus.setValue(new RequestStatus(sortType, RequestState.SUCCESS));
             }
 
             @Override
             public void failure(RetrofitError error) {
-                mRequestStatus.setValue(RequestStatus.FAILURE);
+                mRequestStatus.setValue(new RequestStatus(sortType, RequestState.FAILURE));
             }
         };
     }
