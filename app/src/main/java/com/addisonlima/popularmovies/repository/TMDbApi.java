@@ -1,6 +1,6 @@
 package com.addisonlima.popularmovies.repository;
 
-import com.addisonlima.popularmovies.model.MoviesResponse;
+import com.addisonlima.popularmovies.models.MoviesResponse;
 
 import retrofit.Callback;
 import retrofit.http.GET;

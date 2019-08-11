@@ -1,4 +1,4 @@
-package com.addisonlima.popularmovies.model;
+package com.addisonlima.popularmovies.models;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,4 +1,4 @@
-package com.addisonlima.popularmovies.view;
+package com.addisonlima.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.addisonlima.popularmovies.R;
-import com.addisonlima.popularmovies.model.Movie;
+import com.addisonlima.popularmovies.models.Movie;
 import com.squareup.picasso.Picasso;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder> {

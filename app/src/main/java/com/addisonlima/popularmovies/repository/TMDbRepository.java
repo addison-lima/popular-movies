@@ -3,10 +3,10 @@ package com.addisonlima.popularmovies.repository;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.addisonlima.popularmovies.BuildConfig;
-import com.addisonlima.popularmovies.model.MoviesResponse;
-import com.addisonlima.popularmovies.model.RequestStatus;
-import com.addisonlima.popularmovies.model.RequestStatus.RequestState;
-import com.addisonlima.popularmovies.model.RequestStatus.SortType;
+import com.addisonlima.popularmovies.models.MoviesResponse;
+import com.addisonlima.popularmovies.models.RequestStatus;
+import com.addisonlima.popularmovies.models.RequestStatus.RequestState;
+import com.addisonlima.popularmovies.models.RequestStatus.SortType;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;

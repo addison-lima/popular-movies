@@ -8,18 +8,17 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.addisonlima.popularmovies.model.Movie;
-import com.addisonlima.popularmovies.model.MoviesResponse;
-import com.addisonlima.popularmovies.model.RequestStatus;
-import com.addisonlima.popularmovies.model.RequestStatus.RequestState;
-import com.addisonlima.popularmovies.view.MoviesAdapter;
-import com.addisonlima.popularmovies.viewmodel.MoviesViewModel;
+import com.addisonlima.popularmovies.models.Movie;
+import com.addisonlima.popularmovies.models.MoviesResponse;
+import com.addisonlima.popularmovies.models.RequestStatus;
+import com.addisonlima.popularmovies.models.RequestStatus.RequestState;
+import com.addisonlima.popularmovies.adapters.MoviesAdapter;
+import com.addisonlima.popularmovies.viewmodels.MoviesViewModel;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler {
 
