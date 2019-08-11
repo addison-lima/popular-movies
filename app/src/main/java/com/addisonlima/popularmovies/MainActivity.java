@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import com.addisonlima.popularmovies.models.Movie;
 import com.addisonlima.popularmovies.models.MoviesResponse;
 import com.addisonlima.popularmovies.models.RequestStatus;
 import com.addisonlima.popularmovies.models.RequestStatus.RequestState;
+import com.addisonlima.popularmovies.models.RequestStatus.SortType;
 import com.addisonlima.popularmovies.adapters.MoviesAdapter;
 import com.addisonlima.popularmovies.viewmodels.MoviesViewModel;
 
@@ -43,6 +47,34 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
         mMoviesViewModel.getRequestStatus().observe(this, getRequestStatusObserver());
         mMoviesViewModel.getMoviesResponse().observe(this, getMoviesResponseObserver());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sorting, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_popular:
+                mMoviesViewModel.sortMoviesBy(SortType.POPULAR);
+                return true;
+            case R.id.action_top_rated:
+                mMoviesViewModel.sortMoviesBy(SortType.TOP_RATED);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onClick(Movie movie) {
+        Toast.makeText(this, movie.getOriginalTitle(), Toast.LENGTH_LONG).show();
     }
 
     private Observer<RequestStatus> getRequestStatusObserver() {
@@ -80,10 +112,5 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                 }
             }
         };
-    }
-
-    @Override
-    public void onClick(Movie movie) {
-        Toast.makeText(this, movie.getOriginalTitle(), Toast.LENGTH_LONG).show();
     }
 }
