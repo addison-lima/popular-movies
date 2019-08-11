@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="error_message">An error has occurred. Please check your internet connection and try again.</string>
-    <string name="action_popular">Popular</string>
-    <string name="action_top_rated">Top Rated</string>
+    <string name="action_popular">Popular Movies</string>
+    <string name="action_top_rated">Top Rated Movies</string>
+    <string name="more_info">More Info</string>
+    <string name="more_info_error">An unexpected error has occurred.</string>
 </resources>

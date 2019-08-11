@@ -2,9 +2,11 @@ package com.addisonlima.popularmovies;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.addisonlima.popularmovies.models.Movie;
 import com.addisonlima.popularmovies.models.MoviesResponse;
@@ -74,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     @Override
     public void onClick(Movie movie) {
-        Toast.makeText(this, movie.getOriginalTitle(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
+        startActivity(intent);
     }
 
     private Observer<RequestStatus> getRequestStatusObserver() {
@@ -98,9 +101,27 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                     pbLoadingIndicator.setVisibility(
                             (requestState.equals(RequestState.LOADING))
                                     ? View.VISIBLE : View.INVISIBLE);
+
+                    updateActionBar(requestStatus.getSortType());
                 }
             }
         };
+    }
+
+    private void updateActionBar(SortType sortType) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            switch (sortType) {
+                case POPULAR:
+                    actionBar.setTitle(R.string.action_popular);
+                    break;
+                case TOP_RATED:
+                    actionBar.setTitle(R.string.action_top_rated);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private Observer<MoviesResponse> getMoviesResponseObserver() {
