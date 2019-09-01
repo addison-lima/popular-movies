@@ -7,6 +7,7 @@ import com.addisonlima.popularmovies.models.MoviesResponse;
 import com.addisonlima.popularmovies.models.RequestStatus;
 import com.addisonlima.popularmovies.models.RequestStatus.RequestState;
 import com.addisonlima.popularmovies.models.RequestStatus.SortType;
+import com.addisonlima.popularmovies.models.ReviewsResponse;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -62,6 +63,10 @@ public class TMDbRepository {
         }
     }
 
+    public void getReviewsById(String id) {
+        mService.getReviews(id, getReviewsResponseCallback());
+    }
+
     private Callback<MoviesResponse> getMoviesResponseCallback(final SortType sortType) {
         mRequestStatus.setValue(new RequestStatus(sortType, RequestState.LOADING));
         return new Callback<MoviesResponse>() {
@@ -74,6 +79,20 @@ public class TMDbRepository {
             @Override
             public void failure(RetrofitError error) {
                 mRequestStatus.setValue(new RequestStatus(sortType, RequestState.FAILURE));
+            }
+        };
+    }
+
+    private Callback<ReviewsResponse> getReviewsResponseCallback() {
+        return new Callback<ReviewsResponse>() {
+            @Override
+            public void success(ReviewsResponse reviewsResponse, Response response) {
+                //TODO implement success reviews response
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                //TODO implement failure reviews response
             }
         };
     }
