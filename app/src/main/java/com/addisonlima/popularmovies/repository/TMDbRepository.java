@@ -1,14 +1,22 @@
 package com.addisonlima.popularmovies.repository;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
+import android.os.AsyncTask;
 
 import com.addisonlima.popularmovies.BuildConfig;
+import com.addisonlima.popularmovies.database.FavoriteDatabase;
+import com.addisonlima.popularmovies.database.FavoriteEntry;
+import com.addisonlima.popularmovies.models.Movie;
 import com.addisonlima.popularmovies.models.MoviesResponse;
 import com.addisonlima.popularmovies.models.RequestStatus;
 import com.addisonlima.popularmovies.models.RequestStatus.RequestState;
 import com.addisonlima.popularmovies.models.RequestStatus.SortType;
 import com.addisonlima.popularmovies.models.ReviewsResponse;
 import com.addisonlima.popularmovies.models.VideosResponse;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -22,11 +30,16 @@ public class TMDbRepository {
     private static final String TMDB_API_KEY_PARAM_NAME = "api_key";
     private static final String TMDB_API_KEY_VALUE = BuildConfig.TMDB_API_KEY;
 
+    private static final Object LOCK = new Object();
+    private static TMDbRepository sInstance;
+
     private final MutableLiveData<MoviesResponse> mMoviesResponse = new MutableLiveData<>();
     private final MutableLiveData<RequestStatus> mRequestStatus = new MutableLiveData<>();
     private final TMDbApi mService;
 
-    public TMDbRepository() {
+    private final FavoriteDatabase mFavoriteDatabase;
+
+    private TMDbRepository(Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(TMDB_END_POINT)
                 .setRequestInterceptor(new RequestInterceptor() {
@@ -40,7 +53,22 @@ public class TMDbRepository {
 
         mService = restAdapter.create(TMDbApi.class);
 
+        mFavoriteDatabase = FavoriteDatabase.getInstance(context);
+
         sortMoviesBy(SortType.POPULAR);
+    }
+
+    public static TMDbRepository getInstance(Context context) {
+        if (sInstance == null) {
+            synchronized (LOCK) {
+                sInstance = new TMDbRepository(context);
+            }
+        }
+        return sInstance;
+    }
+
+    public LiveData<List<FavoriteEntry>> getFavoriteMoviesResponse() {
+        return mFavoriteDatabase.favoriteDao().loadFavoriteMovies();
     }
 
     public MutableLiveData<MoviesResponse> getMoviesResponse() {
@@ -53,6 +81,9 @@ public class TMDbRepository {
 
     public void sortMoviesBy(SortType sortType) {
         switch (sortType) {
+            case FAVORITE:
+                mRequestStatus.setValue(new RequestStatus(SortType.FAVORITE, RequestState.SUCCESS));
+                break;
             case POPULAR:
                 mService.getPopularMovies(getMoviesResponseCallback(SortType.POPULAR));
                 break;
@@ -62,6 +93,18 @@ public class TMDbRepository {
             default:
                 break;
         }
+    }
+
+    public void markAsFavorite(Movie movie) {
+        final FavoriteEntry favoriteEntry = convertToFavoriteEntry(movie);
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                mFavoriteDatabase.favoriteDao().insertFavorite(favoriteEntry);
+                return null;
+            }
+        }.execute();
     }
 
     public void getReviewsById(String id) {
@@ -114,5 +157,11 @@ public class TMDbRepository {
                 //TODO implement failure videos response
             }
         };
+    }
+
+    private FavoriteEntry convertToFavoriteEntry(Movie movie) {
+        return new FavoriteEntry(movie.getId(), movie.getTitle(), movie.getOriginalTitle(),
+                movie.getPosterPath(), movie.getOverview(), movie.getVoteAverage(),
+                movie.getReleaseDate());
     }
 }

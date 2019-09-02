@@ -7,11 +7,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.addisonlima.popularmovies.models.Movie;
+import com.addisonlima.popularmovies.repository.TMDbRepository;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_MOVIE = "movie";
+
+    private Movie mMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +22,11 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         if (getIntent().hasExtra(EXTRA_MOVIE)) {
-            Movie movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
-            populateUi(movie);
+            mMovie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+            populateUi(mMovie);
+
+            //TEST
+            markAsFavorite();
         } else {
             Toast.makeText(this, getString(R.string.more_info_error),
                     Toast.LENGTH_LONG).show();
@@ -32,7 +38,7 @@ public class DetailActivity extends AppCompatActivity {
         ImageView ivPoster = findViewById(R.id.iv_poster);
 
         Picasso.with(this)
-                .load(movie.getPosterPath())
+                .load(movie.getPosterFullPath())
                 .error(R.color.colorPrimary)
                 .into(ivPoster);
 
@@ -50,5 +56,10 @@ public class DetailActivity extends AppCompatActivity {
 
         TextView tvOverview = findViewById(R.id.tv_overview);
         tvOverview.setText(movie.getOverview());
+    }
+
+    private void markAsFavorite() {
+        TMDbRepository repository = TMDbRepository.getInstance(this.getApplication());
+        repository.markAsFavorite(mMovie);
     }
 }

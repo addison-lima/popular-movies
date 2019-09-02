@@ -50,7 +50,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         Movie movie = mMoviesData[i];
 
         Picasso.with(mContext)
-                .load(movie.getPosterPath())
+                .load(movie.getPosterFullPath())
                 .error(R.color.colorPrimary)
                 .into(moviesAdapterViewHolder.ivPoster);
     }

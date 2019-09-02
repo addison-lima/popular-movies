@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="empty_message">Your favorite movies are shown here. Please choose them in Popular Movies or Top Rated Movies.</string>
     <string name="error_message">An error has occurred. Please check your internet connection and try again.</string>
+    <string name="action_favorite">Favorite Movies</string>
     <string name="action_popular">Popular Movies</string>
     <string name="action_top_rated">Top Rated Movies</string>
     <string name="more_info">More Info</string>

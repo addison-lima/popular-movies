@@ -28,6 +28,17 @@ public class Movie implements Parcelable {
     @SerializedName("release_date")
     private String mReleaseDate;
 
+    public Movie(String id, String title, String originalTitle, String posterPath, String overview,
+                 String voteAverage, String releaseDate) {
+        mId = id;
+        mTitle = title;
+        mOriginalTitle = originalTitle;
+        mPosterPath = posterPath;
+        mOverview = overview;
+        mVoteAverage = voteAverage;
+        mReleaseDate = releaseDate;
+    }
+
     protected Movie(Parcel in) {
         mId = in.readString();
         mTitle = in.readString();
@@ -63,6 +74,10 @@ public class Movie implements Parcelable {
     }
 
     public String getPosterPath() {
+        return mPosterPath;
+    }
+
+    public String getPosterFullPath() {
         return "http://image.tmdb.org/t/p/w500" + mPosterPath;
     }
 
