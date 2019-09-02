@@ -10,4 +10,8 @@ public class MoviesResponse {
     public Movie[] getMovies() {
         return mMovies;
     }
+
+    public void setMovies(Movie[] movies) {
+        mMovies = movies;
+    }
 }

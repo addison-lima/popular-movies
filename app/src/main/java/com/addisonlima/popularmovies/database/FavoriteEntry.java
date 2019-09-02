@@ -3,11 +3,13 @@ package com.addisonlima.popularmovies.database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-@Entity(tableName = "task")
+@Entity(tableName = "favorite")
 public class FavoriteEntry {
 
     @PrimaryKey
+    @NonNull
     private String id;
     private String title;
     @ColumnInfo(name = "original_title")

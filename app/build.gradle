@@ -20,6 +20,10 @@ android {
             buildConfigField 'String', "TMDB_API_KEY", PopularMovies_TMDbApiKey
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
