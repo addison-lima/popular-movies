@@ -3,7 +3,6 @@ package com.addisonlima.popularmovies.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.addisonlima.popularmovies.BuildConfig;
 import com.addisonlima.popularmovies.database.FavoriteDatabase;

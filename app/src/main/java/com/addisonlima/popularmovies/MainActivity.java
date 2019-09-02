@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -84,34 +83,31 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     private Observer<RequestStatus> getRequestStatusObserver() {
-        return new Observer<RequestStatus>() {
-            @Override
-            public void onChanged(@Nullable RequestStatus requestStatus) {
-                if (requestStatus != null) {
-                    RequestState requestState = requestStatus.getRequestState();
+        return requestStatus -> {
+            if (requestStatus != null) {
+                RequestState requestState = requestStatus.getRequestState();
 
-                    RecyclerView rvMovies = findViewById(R.id.rv_movies);
-                    rvMovies.setVisibility(
-                            (requestState.equals(RequestState.SUCCESS))
-                                    ? View.VISIBLE : View.INVISIBLE);
+                RecyclerView rvMovies = findViewById(R.id.rv_movies);
+                rvMovies.setVisibility(
+                        (requestState.equals(RequestState.SUCCESS))
+                                ? View.VISIBLE : View.INVISIBLE);
 
-                    TextView tvEmptyMessage = findViewById(R.id.tv_empty_message);
-                    tvEmptyMessage.setVisibility(
-                            (requestState.equals(RequestState.EMPTY))
-                                    ? View.VISIBLE : View.INVISIBLE);
+                TextView tvEmptyMessage = findViewById(R.id.tv_empty_message);
+                tvEmptyMessage.setVisibility(
+                        (requestState.equals(RequestState.EMPTY))
+                                ? View.VISIBLE : View.INVISIBLE);
 
-                    TextView tvFailureMessage = findViewById(R.id.tv_failure_message);
-                    tvFailureMessage.setVisibility(
-                            (requestState.equals(RequestState.FAILURE))
-                                    ? View.VISIBLE : View.INVISIBLE);
+                TextView tvFailureMessage = findViewById(R.id.tv_failure_message);
+                tvFailureMessage.setVisibility(
+                        (requestState.equals(RequestState.FAILURE))
+                                ? View.VISIBLE : View.INVISIBLE);
 
-                    ProgressBar pbLoadingIndicator = findViewById(R.id.pb_loading_indicator);
-                    pbLoadingIndicator.setVisibility(
-                            (requestState.equals(RequestState.LOADING))
-                                    ? View.VISIBLE : View.INVISIBLE);
+                ProgressBar pbLoadingIndicator = findViewById(R.id.pb_loading_indicator);
+                pbLoadingIndicator.setVisibility(
+                        (requestState.equals(RequestState.LOADING))
+                                ? View.VISIBLE : View.INVISIBLE);
 
-                    updateActionBar(requestStatus.getSortType());
-                }
+                updateActionBar(requestStatus.getSortType());
             }
         };
     }
@@ -136,12 +132,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     private Observer<MoviesResponse> getMoviesResponseObserver() {
-        return new Observer<MoviesResponse>() {
-            @Override
-            public void onChanged(@Nullable MoviesResponse moviesResponse) {
-                if (moviesResponse != null) {
-                    mMoviesAdapter.setMoviesData(moviesResponse.getMovies());
-                }
+        return moviesResponse -> {
+            if (moviesResponse != null) {
+                mMoviesAdapter.setMoviesData(moviesResponse.getMovies());
             }
         };
     }
