@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.action_favorite:
+                mMoviesViewModel.sortMoviesBy(SortType.FAVORITE);
+                return true;
             case R.id.action_popular:
                 mMoviesViewModel.sortMoviesBy(SortType.POPULAR);
                 return true;
@@ -92,6 +95,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                             (requestState.equals(RequestState.SUCCESS))
                                     ? View.VISIBLE : View.INVISIBLE);
 
+                    TextView tvEmptyMessage = findViewById(R.id.tv_empty_message);
+                    tvEmptyMessage.setVisibility(
+                            (requestState.equals(RequestState.EMPTY))
+                                    ? View.VISIBLE : View.INVISIBLE);
+
                     TextView tvFailureMessage = findViewById(R.id.tv_failure_message);
                     tvFailureMessage.setVisibility(
                             (requestState.equals(RequestState.FAILURE))
@@ -112,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             switch (sortType) {
+                case FAVORITE:
+                    actionBar.setTitle(R.string.action_favorite);
+                    break;
                 case POPULAR:
                     actionBar.setTitle(R.string.action_popular);
                     break;

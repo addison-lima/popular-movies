@@ -53,6 +53,10 @@ public class TMDbRepository {
 
     public void sortMoviesBy(SortType sortType) {
         switch (sortType) {
+            case FAVORITE:
+                //TODO save and restore favorite movies
+                mRequestStatus.setValue(new RequestStatus(SortType.FAVORITE, RequestState.EMPTY));
+                break;
             case POPULAR:
                 mService.getPopularMovies(getMoviesResponseCallback(SortType.POPULAR));
                 break;
