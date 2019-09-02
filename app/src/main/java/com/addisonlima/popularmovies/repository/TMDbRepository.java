@@ -3,6 +3,7 @@ package com.addisonlima.popularmovies.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.addisonlima.popularmovies.BuildConfig;
 import com.addisonlima.popularmovies.database.FavoriteDatabase;
@@ -61,6 +62,10 @@ public class TMDbRepository {
         return sInstance;
     }
 
+    public LiveData<List<FavoriteEntry>> getFavoriteMoviesResponse() {
+        return mFavoriteDatabase.favoriteDao().loadFavoriteMovies();
+    }
+
     public MutableLiveData<MoviesResponse> getMoviesResponse() {
         return mMoviesResponse;
     }
@@ -72,7 +77,8 @@ public class TMDbRepository {
     public void sortMoviesBy(SortType sortType) {
         switch (sortType) {
             case FAVORITE:
-                getFavoriteMovies();
+                mRequestStatus.setValue(new RequestStatus(SortType.FAVORITE, RequestState.EMPTY));
+//                getFavoriteMovies();
                 break;
             case POPULAR:
                 mService.getPopularMovies(getMoviesResponseCallback(SortType.POPULAR));
@@ -88,7 +94,13 @@ public class TMDbRepository {
     public void markAsFavorite(Movie movie) {
         final FavoriteEntry favoriteEntry = convertToFavoriteEntry(movie);
 
-        mFavoriteDatabase.favoriteDao().insertFavorite(favoriteEntry);
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                mFavoriteDatabase.favoriteDao().insertFavorite(favoriteEntry);
+                return null;
+            }
+        }.execute();
     }
 
     public void getReviewsById(String id) {

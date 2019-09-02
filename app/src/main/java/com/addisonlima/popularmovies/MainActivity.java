@@ -5,10 +5,12 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.addisonlima.popularmovies.database.FavoriteEntry;
 import com.addisonlima.popularmovies.models.Movie;
 import com.addisonlima.popularmovies.models.MoviesResponse;
 import com.addisonlima.popularmovies.models.RequestStatus;
@@ -23,6 +26,8 @@ import com.addisonlima.popularmovies.models.RequestStatus.RequestState;
 import com.addisonlima.popularmovies.models.RequestStatus.SortType;
 import com.addisonlima.popularmovies.adapters.MoviesAdapter;
 import com.addisonlima.popularmovies.viewmodels.MoviesViewModel;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler {
 
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
         mMoviesViewModel.getRequestStatus().observe(this, getRequestStatusObserver());
         mMoviesViewModel.getMoviesResponse().observe(this, getMoviesResponseObserver());
+        mMoviesViewModel.getFavoriteMoviesResponse().observe(this, getFavoriteMoviesResponseObserver());
     }
 
     @Override
@@ -135,6 +141,23 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         return moviesResponse -> {
             if (moviesResponse != null) {
                 mMoviesAdapter.setMoviesData(moviesResponse.getMovies());
+            }
+        };
+    }
+
+    private Observer<List<FavoriteEntry>> getFavoriteMoviesResponseObserver() {
+        return new Observer<List<FavoriteEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<FavoriteEntry> favoriteEntryList) {
+                if (favoriteEntryList != null) {
+                    if (favoriteEntryList.isEmpty()) {
+                        Log.d("ADD_TEST", "favoriteEntryList it is empty");
+                    } else {
+                        Log.d("ADD_TEST", "favoriteEntryList size: " + favoriteEntryList.size());
+                    }
+                } else {
+                    Log.d("ADD_TEST", "favoriteEntryList it is NULL");
+                }
             }
         };
     }
