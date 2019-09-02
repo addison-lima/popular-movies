@@ -19,6 +19,7 @@ import com.addisonlima.popularmovies.models.VideosResponse;
 import java.util.List;
 
 import retrofit.Callback;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -41,8 +42,12 @@ public class TMDbRepository {
     private TMDbRepository(Context context) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(TMDB_END_POINT)
-                .setRequestInterceptor(request -> request
-                        .addEncodedQueryParam(TMDB_API_KEY_PARAM_NAME, TMDB_API_KEY_VALUE))
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        request.addEncodedQueryParam(TMDB_API_KEY_PARAM_NAME, TMDB_API_KEY_VALUE);
+                    }
+                })
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
 
@@ -77,8 +82,7 @@ public class TMDbRepository {
     public void sortMoviesBy(SortType sortType) {
         switch (sortType) {
             case FAVORITE:
-                mRequestStatus.setValue(new RequestStatus(SortType.FAVORITE, RequestState.EMPTY));
-//                getFavoriteMovies();
+                mRequestStatus.setValue(new RequestStatus(SortType.FAVORITE, RequestState.SUCCESS));
                 break;
             case POPULAR:
                 mService.getPopularMovies(getMoviesResponseCallback(SortType.POPULAR));
@@ -109,14 +113,6 @@ public class TMDbRepository {
 
     public void getVideosById(String id) {
         mService.getVideos(id, getVideosResponseCallback());
-    }
-
-    private void getFavoriteMovies() {
-        LiveData<List<FavoriteEntry>> favoriteEntryLiveData = mFavoriteDatabase.favoriteDao()
-                .loadFavoriteMovies();
-        if (favoriteEntryLiveData != null && favoriteEntryLiveData.getValue() != null) {
-            onFavoriteEntryChanged(favoriteEntryLiveData.getValue());
-        }
     }
 
     private Callback<MoviesResponse> getMoviesResponseCallback(final SortType sortType) {
@@ -163,43 +159,9 @@ public class TMDbRepository {
         };
     }
 
-//  https://android.jlelse.eu/5-steps-to-implement-room-persistence-library-in-android-47b10cd47b24
-
-    private void onFavoriteEntryChanged(List<FavoriteEntry> favoriteEntryList) {
-
-        if (favoriteEntryList == null || favoriteEntryList.isEmpty()) {
-            mRequestStatus.setValue(new RequestStatus(SortType.FAVORITE, RequestState.EMPTY));
-        } else {
-            mMoviesResponse.setValue(convertToMoviesResponse(favoriteEntryList));
-            mRequestStatus.setValue(new RequestStatus(SortType.FAVORITE, RequestState.SUCCESS));
-        }
-    }
-
     private FavoriteEntry convertToFavoriteEntry(Movie movie) {
         return new FavoriteEntry(movie.getId(), movie.getTitle(), movie.getOriginalTitle(),
                 movie.getPosterPath(), movie.getOverview(), movie.getVoteAverage(),
                 movie.getReleaseDate());
-    }
-
-    private Movie convertToMovie(FavoriteEntry favoriteEntry) {
-        return new Movie(favoriteEntry.getId(), favoriteEntry.getTitle(),
-                favoriteEntry.getOriginalTitle(), favoriteEntry.getPosterPath(),
-                favoriteEntry.getOverview(), favoriteEntry.getVoteAverage(),
-                favoriteEntry.getReleaseDate());
-    }
-
-    private MoviesResponse convertToMoviesResponse(List<FavoriteEntry> favoriteEntryList) {
-
-        MoviesResponse moviesResponse = new MoviesResponse();
-
-        Movie[] movies = new Movie[favoriteEntryList.size()];
-
-        for(int i = 0; i < favoriteEntryList.size(); i++) {
-            movies[i] = convertToMovie(favoriteEntryList.get(i));
-        }
-
-        moviesResponse.setMovies(movies);
-
-        return moviesResponse;
     }
 }

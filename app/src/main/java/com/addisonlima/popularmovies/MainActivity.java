@@ -32,6 +32,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler {
 
     private MoviesAdapter mMoviesAdapter;
+    private MoviesAdapter mFavoriteMoviesAdapter;
 
     private MoviesViewModel mMoviesViewModel;
 
@@ -44,10 +45,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         int spanCount = (orientation == Configuration.ORIENTATION_LANDSCAPE) ? 5 : 3;
 
         mMoviesAdapter = new MoviesAdapter(this, this);
+        mFavoriteMoviesAdapter = new MoviesAdapter(this, this);
 
         RecyclerView rvMovies = findViewById(R.id.rv_movies);
         rvMovies.setLayoutManager(new GridLayoutManager(this, spanCount));
         rvMovies.setAdapter(mMoviesAdapter);
+
+        RecyclerView rvFavoriteMovies = findViewById(R.id.rv_favorite_movies);
+        rvFavoriteMovies.setLayoutManager(new GridLayoutManager(this, spanCount));
+        rvFavoriteMovies.setAdapter(mFavoriteMoviesAdapter);
 
         mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
         mMoviesViewModel.getRequestStatus().observe(this, getRequestStatusObserver());
@@ -89,31 +95,49 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     private Observer<RequestStatus> getRequestStatusObserver() {
-        return requestStatus -> {
-            if (requestStatus != null) {
-                RequestState requestState = requestStatus.getRequestState();
+        return new Observer<RequestStatus>() {
+            @Override
+            public void onChanged(@Nullable RequestStatus requestStatus) {
+                if (requestStatus != null) {
+                    SortType sortType = requestStatus.getSortType();
+                    RequestState requestState = requestStatus.getRequestState();
 
-                RecyclerView rvMovies = findViewById(R.id.rv_movies);
-                rvMovies.setVisibility(
-                        (requestState.equals(RequestState.SUCCESS))
-                                ? View.VISIBLE : View.INVISIBLE);
+                    RecyclerView rvMovies = MainActivity.this.findViewById(R.id.rv_movies);
+                    RecyclerView rvFavoriteMovies = MainActivity.this.findViewById(R.id.rv_favorite_movies);
 
-                TextView tvEmptyMessage = findViewById(R.id.tv_empty_message);
-                tvEmptyMessage.setVisibility(
-                        (requestState.equals(RequestState.EMPTY))
-                                ? View.VISIBLE : View.INVISIBLE);
+                    TextView tvEmptyMessage = MainActivity.this.findViewById(R.id.tv_empty_message);
 
-                TextView tvFailureMessage = findViewById(R.id.tv_failure_message);
-                tvFailureMessage.setVisibility(
-                        (requestState.equals(RequestState.FAILURE))
-                                ? View.VISIBLE : View.INVISIBLE);
+                    if (sortType.equals(SortType.FAVORITE)) {
+                        rvMovies.setVisibility(View.INVISIBLE);
+                        if (mFavoriteMoviesAdapter.getItemCount() > 0) {
+                            rvFavoriteMovies.setVisibility(View.VISIBLE);
+                            tvEmptyMessage.setVisibility(View.INVISIBLE);
+                        } else {
+                            rvFavoriteMovies.setVisibility(View.INVISIBLE);
+                            tvEmptyMessage.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        rvMovies.setVisibility(
+                                (requestState.equals(RequestState.SUCCESS))
+                                        ? View.VISIBLE : View.INVISIBLE);
+                        rvFavoriteMovies.setVisibility(View.INVISIBLE);
+                        tvEmptyMessage.setVisibility(View.INVISIBLE);
+                    }
 
-                ProgressBar pbLoadingIndicator = findViewById(R.id.pb_loading_indicator);
-                pbLoadingIndicator.setVisibility(
-                        (requestState.equals(RequestState.LOADING))
-                                ? View.VISIBLE : View.INVISIBLE);
+                    TextView tvFailureMessage = MainActivity.this.findViewById(
+                            R.id.tv_failure_message);
+                    tvFailureMessage.setVisibility(
+                            (requestState.equals(RequestState.FAILURE))
+                                    ? View.VISIBLE : View.INVISIBLE);
 
-                updateActionBar(requestStatus.getSortType());
+                    ProgressBar pbLoadingIndicator = MainActivity.this.findViewById(
+                            R.id.pb_loading_indicator);
+                    pbLoadingIndicator.setVisibility(
+                            (requestState.equals(RequestState.LOADING))
+                                    ? View.VISIBLE : View.INVISIBLE);
+
+                    MainActivity.this.updateActionBar(sortType);
+                }
             }
         };
     }
@@ -138,9 +162,12 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     private Observer<MoviesResponse> getMoviesResponseObserver() {
-        return moviesResponse -> {
-            if (moviesResponse != null) {
-                mMoviesAdapter.setMoviesData(moviesResponse.getMovies());
+        return new Observer<MoviesResponse>() {
+            @Override
+            public void onChanged(@Nullable MoviesResponse moviesResponse) {
+                if (moviesResponse != null) {
+                    mMoviesAdapter.setMoviesData(moviesResponse.getMovies());
+                }
             }
         };
     }
@@ -150,15 +177,30 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             @Override
             public void onChanged(@Nullable List<FavoriteEntry> favoriteEntryList) {
                 if (favoriteEntryList != null) {
-                    if (favoriteEntryList.isEmpty()) {
-                        Log.d("ADD_TEST", "favoriteEntryList it is empty");
-                    } else {
-                        Log.d("ADD_TEST", "favoriteEntryList size: " + favoriteEntryList.size());
-                    }
-                } else {
-                    Log.d("ADD_TEST", "favoriteEntryList it is NULL");
+                    MoviesResponse moviesResponse = convertToMoviesResponse(favoriteEntryList);
+                    mFavoriteMoviesAdapter.setMoviesData(moviesResponse.getMovies());
                 }
             }
         };
+    }
+
+    private MoviesResponse convertToMoviesResponse(List<FavoriteEntry> favoriteEntryList) {
+        MoviesResponse moviesResponse = new MoviesResponse();
+        Movie[] movies = new Movie[favoriteEntryList.size()];
+
+        for(int i = 0; i < favoriteEntryList.size(); i++) {
+            movies[i] = convertToMovie(favoriteEntryList.get(i));
+        }
+
+        moviesResponse.setMovies(movies);
+
+        return moviesResponse;
+    }
+
+    private Movie convertToMovie(FavoriteEntry favoriteEntry) {
+        return new Movie(favoriteEntry.getId(), favoriteEntry.getTitle(),
+                favoriteEntry.getOriginalTitle(), favoriteEntry.getPosterPath(),
+                favoriteEntry.getOverview(), favoriteEntry.getVoteAverage(),
+                favoriteEntry.getReleaseDate());
     }
 }
