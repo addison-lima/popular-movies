@@ -35,8 +35,10 @@ public class TMDbRepository {
 
     private final MutableLiveData<MoviesResponse> mMoviesResponse = new MutableLiveData<>();
     private final MutableLiveData<RequestStatus> mRequestStatus = new MutableLiveData<>();
-    private final TMDbApi mService;
 
+    private final MutableLiveData<ReviewsResponse> mReviewsResponse = new MutableLiveData<>();
+
+    private final TMDbApi mService;
     private final FavoriteDatabase mFavoriteDatabase;
 
     private TMDbRepository(Context context) {
@@ -77,6 +79,10 @@ public class TMDbRepository {
 
     public MutableLiveData<RequestStatus> getRequestStatus() {
         return mRequestStatus;
+    }
+
+    public MutableLiveData<ReviewsResponse> getReviewsResponse() {
+        return mReviewsResponse;
     }
 
     public void sortMoviesBy(SortType sortType) {
@@ -147,12 +153,12 @@ public class TMDbRepository {
         return new Callback<ReviewsResponse>() {
             @Override
             public void success(ReviewsResponse reviewsResponse, Response response) {
-                //TODO implement success reviews response
+                mReviewsResponse.setValue(reviewsResponse);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                //TODO implement failure reviews response
+                // Do Nothing
             }
         };
     }

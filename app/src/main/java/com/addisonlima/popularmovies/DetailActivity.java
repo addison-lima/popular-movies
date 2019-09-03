@@ -1,5 +1,7 @@
 package com.addisonlima.popularmovies;
 
+import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.addisonlima.popularmovies.models.Movie;
+import com.addisonlima.popularmovies.models.Review;
+import com.addisonlima.popularmovies.models.ReviewsResponse;
 import com.addisonlima.popularmovies.repository.TMDbRepository;
 import com.squareup.picasso.Picasso;
 
@@ -16,6 +20,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     public static final String EXTRA_MOVIE = "movie";
     public static final String EXTRA_FAVORITE = "favorite";
+
+    private TMDbRepository mRepository = TMDbRepository.getInstance(this.getApplication());
 
     private Movie mMovie;
     private boolean mIsFavorite = false;
@@ -42,18 +48,39 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         updateFavoriteButton();
+
+        mRepository.getReviewsResponse().observe(this, getReviewsResponseObserver());
+        mRepository.getReviewsById(mMovie.getId());
     }
 
     @Override
     public void onClick(View view) {
-        TMDbRepository repository = TMDbRepository.getInstance(this.getApplication());
         if (mIsFavorite) {
-            repository.unmarkAsFavorite(mMovie);
+            mRepository.unmarkAsFavorite(mMovie);
         } else {
-            repository.markAsFavorite(mMovie);
+            mRepository.markAsFavorite(mMovie);
         }
         mIsFavorite = !mIsFavorite;
         updateFavoriteButton();
+    }
+
+    private Observer<ReviewsResponse> getReviewsResponseObserver() {
+        return new Observer<ReviewsResponse>() {
+            @Override
+            public void onChanged(@Nullable ReviewsResponse reviewsResponse) {
+                TextView tvReviews = findViewById(R.id.tv_reviews);
+                if (reviewsResponse != null && reviewsResponse.getReviews().length > 0) {
+                    String reviews = "";
+                    for (Review review : reviewsResponse.getReviews()) {
+                        reviews += "(" + review.getAuthor() + ")\n";
+                        reviews += review.getContent() + "\n\n";
+                    }
+                    tvReviews.setText(reviews);
+                } else {
+                    tvReviews.setText(R.string.no_review_available);
+                }
+            }
+        };
     }
 
     private void populateUi(Movie movie) {
