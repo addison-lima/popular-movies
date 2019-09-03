@@ -50,7 +50,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         Movie movie = mMoviesData[i];
 
         Picasso.with(mContext)
-                .load(movie.getPosterPath())
+                .load(movie.getPosterFullPath())
                 .error(R.color.colorPrimary)
                 .into(moviesAdapterViewHolder.ivPoster);
     }
@@ -67,6 +67,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     public void setMoviesData(Movie[] moviesData) {
         mMoviesData = moviesData;
         notifyDataSetChanged();
+    }
+
+    public boolean hasMovie(Movie movie) {
+        if (mMoviesData != null) {
+            for (Movie movieData : mMoviesData) {
+                if (movieData.getId().equals(movie.getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder

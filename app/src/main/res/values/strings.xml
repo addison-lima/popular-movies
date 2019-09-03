@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="empty_message">Your favorite movies are shown here. Please choose them in Popular Movies or Top Rated Movies.</string>
     <string name="error_message">An error has occurred. Please check your internet connection and try again.</string>
+    <string name="action_favorite">Favorite Movies</string>
     <string name="action_popular">Popular Movies</string>
     <string name="action_top_rated">Top Rated Movies</string>
     <string name="more_info">More Info</string>
@@ -8,5 +10,15 @@
     <string name="original_title">Original Title</string>
     <string name="overview">Overview</string>
     <string name="release_date">Release Date</string>
+    <string name="reviews">Reviews</string>
+    <string name="no_review_available">No review available.</string>
     <string name="user_rating">User Rating</string>
+    <string name="videos">Videos</string>
+    <string name="no_video_available">No video available.</string>
+    <string name="mark_as_favorite">MARK AS FAVORITE</string>
+    <string name="unmark_as_favorite">UNMARK AS FAVORITE</string>
+    <string name="layout_test_33_chars" translatable="false">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</string>
+    <string name="layout_test_66_chars" translatable="false">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</string>
+    <string name="layout_test_date" translatable="false">YYYY-MM-DD</string>
+    <string name="layout_test_rating" translatable="false">10.0</string>
 </resources>

@@ -19,6 +19,7 @@ public class RequestStatus {
     }
 
     public enum SortType {
+        FAVORITE,
         POPULAR,
         TOP_RATED
     }
