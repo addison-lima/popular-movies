@@ -14,6 +14,7 @@
     <string name="no_review_available">No review available.</string>
     <string name="user_rating">User Rating</string>
     <string name="videos">Videos</string>
+    <string name="no_video_available">No video available.</string>
     <string name="mark_as_favorite">MARK AS FAVORITE</string>
     <string name="unmark_as_favorite">UNMARK AS FAVORITE</string>
     <string name="layout_test_33_chars" translatable="false">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</string>

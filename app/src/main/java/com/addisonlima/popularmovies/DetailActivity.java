@@ -1,6 +1,9 @@
 package com.addisonlima.popularmovies;
 
 import android.arch.lifecycle.Observer;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 import com.addisonlima.popularmovies.models.Movie;
 import com.addisonlima.popularmovies.models.Review;
 import com.addisonlima.popularmovies.models.ReviewsResponse;
+import com.addisonlima.popularmovies.models.VideosResponse;
 import com.addisonlima.popularmovies.repository.TMDbRepository;
 import com.squareup.picasso.Picasso;
 
@@ -49,7 +53,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         updateFavoriteButton();
 
+        mRepository.getVideosResponse().observe(this, getVideosResponseObserver());
         mRepository.getReviewsResponse().observe(this, getReviewsResponseObserver());
+
+        mRepository.getVideosById(mMovie.getId());
         mRepository.getReviewsById(mMovie.getId());
     }
 
@@ -62,6 +69,28 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
         mIsFavorite = !mIsFavorite;
         updateFavoriteButton();
+    }
+
+    private Observer<VideosResponse> getVideosResponseObserver() {
+        return new Observer<VideosResponse>() {
+            @Override
+            public void onChanged(@Nullable VideosResponse videosResponse) {
+                if (videosResponse != null && videosResponse.getVideos().length > 0) {
+                }
+            }
+        };
+    }
+
+    private void startYouTube(String videoId) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("vnd.youtube:" + videoId));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + videoId));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
     }
 
     private Observer<ReviewsResponse> getReviewsResponseObserver() {

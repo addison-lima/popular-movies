@@ -37,6 +37,7 @@ public class TMDbRepository {
     private final MutableLiveData<RequestStatus> mRequestStatus = new MutableLiveData<>();
 
     private final MutableLiveData<ReviewsResponse> mReviewsResponse = new MutableLiveData<>();
+    private final MutableLiveData<VideosResponse> mVideosResponse = new MutableLiveData<>();
 
     private final TMDbApi mService;
     private final FavoriteDatabase mFavoriteDatabase;
@@ -73,16 +74,20 @@ public class TMDbRepository {
         return mFavoriteDatabase.favoriteDao().loadFavoriteMovies();
     }
 
-    public MutableLiveData<MoviesResponse> getMoviesResponse() {
+    public LiveData<MoviesResponse> getMoviesResponse() {
         return mMoviesResponse;
     }
 
-    public MutableLiveData<RequestStatus> getRequestStatus() {
+    public LiveData<RequestStatus> getRequestStatus() {
         return mRequestStatus;
     }
 
-    public MutableLiveData<ReviewsResponse> getReviewsResponse() {
+    public LiveData<ReviewsResponse> getReviewsResponse() {
         return mReviewsResponse;
+    }
+
+    public LiveData<VideosResponse> getVideosResponse() {
+        return mVideosResponse;
     }
 
     public void sortMoviesBy(SortType sortType) {
@@ -167,12 +172,12 @@ public class TMDbRepository {
         return new Callback<VideosResponse>() {
             @Override
             public void success(VideosResponse videosResponse, Response response) {
-                //TODO implement success videos response
+                mVideosResponse.setValue(videosResponse);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                //TODO implement failure videos response
+                // Do Nothing
             }
         };
     }
