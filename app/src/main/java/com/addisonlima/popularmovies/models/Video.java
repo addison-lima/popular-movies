@@ -31,4 +31,8 @@ public class Video {
     public String getType() {
         return mType;
     }
+
+    public String getThumbnailPath() {
+        return "https://img.youtube.com/vi/" + mKey + "/hqdefault.jpg";
+    }
 }

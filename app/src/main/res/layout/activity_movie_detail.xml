@@ -171,17 +171,27 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_overview" />
 
-            <TextView
-                android:id="@+id/tv_videos"
+            <FrameLayout
+                android:id="@+id/view_videos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:text="@string/no_video_available"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintLeft_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_videos_label" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_videos_label">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/no_video_available" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/tv_reviews_label"
@@ -193,7 +203,7 @@
                 android:text="@string/reviews"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_videos" />
+                app:layout_constraintTop_toBottomOf="@id/view_videos" />
 
             <TextView
                 android:id="@+id/tv_reviews"
