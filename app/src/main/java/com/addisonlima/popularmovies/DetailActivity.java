@@ -2,6 +2,8 @@ package com.addisonlima.popularmovies;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,11 +12,13 @@ import com.addisonlima.popularmovies.models.Movie;
 import com.addisonlima.popularmovies.repository.TMDbRepository;
 import com.squareup.picasso.Picasso;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String EXTRA_MOVIE = "movie";
+    public static final String EXTRA_FAVORITE = "favorite";
 
     private Movie mMovie;
+    private boolean mIsFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +28,32 @@ public class DetailActivity extends AppCompatActivity {
         if (getIntent().hasExtra(EXTRA_MOVIE)) {
             mMovie = getIntent().getParcelableExtra(EXTRA_MOVIE);
             populateUi(mMovie);
-
-            //TEST
-            markAsFavorite();
         } else {
             Toast.makeText(this, getString(R.string.more_info_error),
                     Toast.LENGTH_LONG).show();
             finish();
         }
+
+        Button btnFavorite = findViewById(R.id.btn_favorite);
+        btnFavorite.setOnClickListener(this);
+
+        if (getIntent().hasExtra(EXTRA_FAVORITE)) {
+            mIsFavorite = getIntent().getBooleanExtra(EXTRA_FAVORITE, false);
+        }
+
+        updateFavoriteButton();
+    }
+
+    @Override
+    public void onClick(View view) {
+        TMDbRepository repository = TMDbRepository.getInstance(this.getApplication());
+        if (mIsFavorite) {
+            repository.unmarkAsFavorite(mMovie);
+        } else {
+            repository.markAsFavorite(mMovie);
+        }
+        mIsFavorite = !mIsFavorite;
+        updateFavoriteButton();
     }
 
     private void populateUi(Movie movie) {
@@ -58,8 +80,8 @@ public class DetailActivity extends AppCompatActivity {
         tvOverview.setText(movie.getOverview());
     }
 
-    private void markAsFavorite() {
-        TMDbRepository repository = TMDbRepository.getInstance(this.getApplication());
-        repository.markAsFavorite(mMovie);
+    private void updateFavoriteButton() {
+        Button btnFavorite = findViewById(R.id.btn_favorite);
+        btnFavorite.setText(mIsFavorite ? R.string.unmark_as_favorite : R.string.mark_as_favorite);
     }
 }

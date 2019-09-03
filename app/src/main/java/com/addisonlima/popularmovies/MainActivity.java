@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     public void onClick(Movie movie) {
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
+        intent.putExtra(DetailActivity.EXTRA_FAVORITE, mFavoriteMoviesAdapter.hasMovie(movie));
         startActivity(intent);
     }
 

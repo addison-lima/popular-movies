@@ -69,6 +69,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         notifyDataSetChanged();
     }
 
+    public boolean hasMovie(Movie movie) {
+        if (mMoviesData != null) {
+            for (Movie movieData : mMoviesData) {
+                if (movieData.getId().equals(movie.getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 

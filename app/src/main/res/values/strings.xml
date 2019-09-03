@@ -11,4 +11,10 @@
     <string name="overview">Overview</string>
     <string name="release_date">Release Date</string>
     <string name="user_rating">User Rating</string>
+    <string name="mark_as_favorite">MARK AS FAVORITE</string>
+    <string name="unmark_as_favorite">UNMARK AS FAVORITE</string>
+    <string name="layout_test_33_chars" translatable="false">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</string>
+    <string name="layout_test_66_chars" translatable="false">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</string>
+    <string name="layout_test_date" translatable="false">YYYY-MM-DD</string>
+    <string name="layout_test_rating" translatable="false">10.0</string>
 </resources>

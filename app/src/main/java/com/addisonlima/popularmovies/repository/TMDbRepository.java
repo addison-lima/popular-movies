@@ -107,6 +107,18 @@ public class TMDbRepository {
         }.execute();
     }
 
+    public void unmarkAsFavorite(Movie movie) {
+        final FavoriteEntry favoriteEntry = convertToFavoriteEntry(movie);
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                mFavoriteDatabase.favoriteDao().deleteFavorite(favoriteEntry);
+                return null;
+            }
+        }.execute();
+    }
+
     public void getReviewsById(String id) {
         mService.getReviews(id, getReviewsResponseCallback());
     }
