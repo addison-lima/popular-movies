@@ -1,6 +1,6 @@
 # Popular Movies Project
 
-## Stage 1
+## Stage 1 and Stage 2
 To run the project, you need to add the TMDb api key to your gradle.properties file in your home directory under .gradle directory:
 
 PopularMovies_TMDbApiKey="YOUR_KEY_HERE"
