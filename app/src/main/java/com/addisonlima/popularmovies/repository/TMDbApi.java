@@ -1,24 +1,17 @@
 package com.addisonlima.popularmovies.repository;
 
-import com.addisonlima.popularmovies.models.MoviesResponse;
-import com.addisonlima.popularmovies.models.ReviewsResponse;
-import com.addisonlima.popularmovies.models.VideosResponse;
+import android.arch.lifecycle.LiveData;
 
-import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Path;
+import com.addisonlima.popularmovies.model.Game;
+import com.github.leonardoxh.livedatacalladapter.Resource;
+
+import java.util.List;
+
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 public interface TMDbApi {
 
-    @GET("/movie/popular")
-    void getPopularMovies(Callback<MoviesResponse> cb);
-
-    @GET("/movie/top_rated")
-    void getTopRatedMovies(Callback<MoviesResponse> cb);
-
-    @GET("/movie/{id}/reviews")
-    void getReviews(@Path("id") String id, Callback<ReviewsResponse> cb);
-
-    @GET("/movie/{id}/videos")
-    void getVideos(@Path("id") String id, Callback<VideosResponse> cb);
+    @POST("/games")
+    LiveData<Resource<List<Game>>> getGames(@Body String query);
 }
