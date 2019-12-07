@@ -36,7 +36,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation "com.squareup.retrofit2:converter-gson:2.4.0"
     implementation "com.squareup.retrofit2:converter-scalars:2.4.0"
-    implementation "com.github.leonardoxh:retrofit2-livedata-adapter:1.1.2"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'

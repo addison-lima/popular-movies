@@ -1,23 +1,19 @@
 package com.addisonlima.popularmovies.model;
 
 public class Game {
-
-    private Integer mId;
-    private String mName;
+    private Integer id;
+    private String name;
+    private String summary;
 
     public Integer getId() {
-        return mId;
-    }
-
-    public void setId(Integer id) {
-        this.mId = id;
+        return id;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
-    public void setName(String name) {
-        this.mName = name;
+    public String getSummary() {
+        return summary;
     }
 }
